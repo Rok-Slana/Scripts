@@ -6,10 +6,8 @@ public class Player : MonoBehaviour {
 	
 	[Tooltip("Insert rocket here")]	
 	public Rocket rocket;
-
 	[Tooltip("Insert camera here")]
 	public Camera camera;
-
 	[Tooltip("Time between two rocket launches")]
 	public float time = 1.0f;
 	
@@ -28,15 +26,14 @@ public class Player : MonoBehaviour {
 	
 	void Update () {		
 		
-		//Launch a rocket if rocket is not active
+		//Launch a rocket if possible - rocket is not active
 		if(Input.GetMouseButtonDown(0) && !rocketActive){		
 			Vector3 targetPos = MousePos();			
 			Rocket rocketClone = Instantiate(rocket, this.transform.position, Quaternion.identity);
-            //Debug.Log(rocketClone);
 			rocketClone.LaunchRocket(targetPos);			
 		}
 		
-		//Subtratct time from timer if rocket is active
+		//Subtratct time from timer is rocket is active
 		if(rocketActive){
 			timer-=Time.deltaTime;
 			//Debug.Log(timer);
