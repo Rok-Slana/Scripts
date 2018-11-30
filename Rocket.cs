@@ -66,7 +66,6 @@ public class Rocket : MonoBehaviour {
 	void FixedUpdate(){
 
         if (rocketLaunched){
-
             rb.AddForce(targetPos * thrust * Time.deltaTime);
             thrust *= addMoreThrust;
         }
@@ -81,9 +80,8 @@ public class Rocket : MonoBehaviour {
 		Target2P target = collision.gameObject.GetComponent<Target2P>();
 				
 		if(target.IsTarget()){
-
 			gameManager.AddLife();
-            audioManager.Play("rocketExplode");
+            //audioManager.Play("rocketExplode");
         }else{
 
             audioManager.Play("wrongHit");

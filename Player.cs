@@ -15,7 +15,7 @@ public class Player : MonoBehaviour {
 	
 	private int numOfRockets;
 	
-	private Vector3 playerPos;
+	//private Vector3 playerPos;
 	
 	private bool rocketActive = false;
 	
@@ -23,7 +23,7 @@ public class Player : MonoBehaviour {
 	
 	
 	void Start(){
-		playerPos = this.transform.position;
+		//playerPos = this.transform.position;
 	}
 	
 	void Update () {		

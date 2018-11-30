@@ -3,86 +3,105 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LetterLine : MonoBehaviour {
-
-    public GameObject activeLetter;
-    public GameObject[] otherLetterArray;
-
-    public Transform[] spawnerPos;
-
-    // stores position values where a letter has already been spawned
-    private bool[] usedPositions = new bool[] { false, false, false, false, false };
-
+    #region
     private int numOfActiveLetters = 0;
     private int lineAndTargetID;
+    private int countSpawnedActiveLetters = 0;
 
-    void Start(){
-        
+    private static int numberOfInstances;
+
+    private GameManager gameManager;
+   
+    public Transform[] spawnerPos;
+
+    private Target2P activeLetter;
+    private Target2P[] inactiveLettersArray;
+
+    private bool[] usedPositions = new bool[] { false, false, false, false, false };    // stores position values where a letter has already been spawned   
+    #endregion
+
+    //Gets and instantiates active and inactive letter objects from GameManager
+    void Start()
+    {
+        gameManager = FindObjectOfType<GameManager>();
+        activeLetter = gameManager.ReturnActiveLetter();
+        activeLetter.SetIsTheRightTarget(true);
+        inactiveLettersArray = gameManager.ReturnInactiveLetters();
+
+        //Set number of 'active letters' in the current LetterLine instance (min = 1, max = 3)
         numOfActiveLetters = Random.Range(1, 4);
-        int countActiveLetters = 0;
+        
+        numberOfInstances += numOfActiveLetters;
+        gameManager.IncrementTargetsSpawned(numOfActiveLetters);
 
-        // Min 1 & max 3 letters out of 5 are active letters
-        // Instantiate randomly letters accros letterLine so that there is a corresponding number of 'active' letters to the number above, others must be 'inactive'
-        // Fill randomly with active letters
-
-        while (countActiveLetters < numOfActiveLetters) {
-            for (int x = 0; x < usedPositions.Length; x++) {
-
-                // Return random bool value
+        if (numberOfInstances == 10) numberOfInstances = 0;
+        else if (numberOfInstances > 10) TryAgain();
+        
+         // Instantiate randomly letters accros letterLine so that there is a corresponding number of 'active' letters to the number above, others must be 'inactive'
+        while (countSpawnedActiveLetters < numOfActiveLetters)
+        {
+            for (int x = 0; x < usedPositions.Length; x++)
+            {
+                // Returns random bool value
                 bool randomBool = (Random.value > 0.5f);
-
-                if (randomBool && countActiveLetters < numOfActiveLetters && !usedPositions[x]){
+                if (randomBool && countSpawnedActiveLetters < numOfActiveLetters && !usedPositions[x])
+                {
                     usedPositions[x] = true;
                     CreateActiveLetter(spawnerPos[x]);
-                    countActiveLetters++;
+                    countSpawnedActiveLetters++;
                 }               
             }
         }
 
         // Fill the rest of the positions with inactive letters
-        for (int x = 0; x < usedPositions.Length; x++) {
-            if (!usedPositions[x]) {
-                CreateInactiveLetter(spawnerPos[x]);
-            }
+        for (int x = 0; x < usedPositions.Length; x++)
+        {
+            if (!usedPositions[x]) CreateInactiveLetter(spawnerPos[x]);
         }
     }
-
-    private void Update()
+    
+    //Helping Method
+    private void CreateActiveLetter(Transform position)
     {
-        //check for active letters with given ID
-        //when there are no active letters left of a certain ID, destroy destroy other letters with same ID and self
-    }
-
-
-    private void CreateActiveLetter(Transform position){
-        GameObject activeLetterClone = Instantiate(activeLetter, position.position, transform.rotation);
+        Target2P activeLetterClone = Instantiate(activeLetter, position.position, transform.rotation);
         activeLetterClone.transform.SetParent(this.transform);
-        Target2P activeLetterCloneTarget = activeLetterClone.GetComponent<Target2P>();
-        activeLetterCloneTarget.SetLineAndTargetID(lineAndTargetID);
+        /*Target2P activeLetterCloneTarget = activeLetterClone.GetComponent<Target2P>();
+        activeLetterCloneTarget.SetLineAndTargetID(lineAndTargetID);*/
     }
 
-    private void CreateInactiveLetter(Transform position){
+    //Helping Method
+    private void CreateInactiveLetter(Transform position)
+    {
         int positionInArray = Random.Range(0, 3);
-        GameObject inactiveLetterClone = Instantiate(otherLetterArray[positionInArray], position.position, transform.rotation);
+        Target2P inactiveLetterClone = Instantiate(inactiveLettersArray[positionInArray], position.position, transform.rotation);
         inactiveLetterClone.transform.SetParent(this.transform);
-        Target2P inactiveLetterCloneTarget = inactiveLetterClone.GetComponent<Target2P>();
-        inactiveLetterCloneTarget.SetLineAndTargetID(lineAndTargetID);
+        /*Target2P inactiveLetterCloneTarget = inactiveLetterClone.GetComponent<Target2P>();
+        inactiveLetterCloneTarget.SetLineAndTargetID(lineAndTargetID);*/
     }
-
-    public void SetLineAndTargetID(int id) {
+    
+    //Helping Method - not sure if this one is even needed ?! :O
+    public void SetLineAndTargetID(int id)
+    {
         lineAndTargetID = id;
     }
-
+    
+    //Helping Method
     public void DecrementActiveLetter()
     {
-        Debug.Log("HEY HEY HEEEY");
         numOfActiveLetters--;
-        if (numOfActiveLetters == 0)
-        {
-            Destroy(gameObject);
-        }
+        if (numOfActiveLetters == 0) Destroy(gameObject);
     }
-
-
-
-
+    
+    //Helping Method for accurate instantiation of active letter objects
+    public void TryAgain()
+    {
+        while (numberOfInstances > 10)
+        {
+            numberOfInstances -= numOfActiveLetters;
+            numOfActiveLetters--;
+            numberOfInstances += numOfActiveLetters;
+        }
+        numberOfInstances = 0;
+        return;
+    }
 }
