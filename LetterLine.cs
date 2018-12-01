@@ -20,6 +20,8 @@ public class LetterLine : MonoBehaviour {
     private bool[] usedPositions = new bool[] { false, false, false, false, false };    // stores position values where a letter has already been spawned   
     #endregion
 
+    private static int count = 0;
+
     //Gets and instantiates active and inactive letter objects from GameManager
     void Start()
     {
@@ -34,7 +36,14 @@ public class LetterLine : MonoBehaviour {
         numberOfInstances += numOfActiveLetters;
         gameManager.IncrementTargetsSpawned(numOfActiveLetters);
 
-        if (numberOfInstances == 10) numberOfInstances = 0;
+        if (numberOfInstances == 10)
+        {
+            numberOfInstances = 0;
+            /////////////////////////////////////
+            Debug.Log("Count : " + count);
+            count++;
+            /////////////////////////////////////
+        }
         else if (numberOfInstances > 10) TryAgain();
         
          // Instantiate randomly letters accros letterLine so that there is a corresponding number of 'active' letters to the number above, others must be 'inactive'
@@ -75,10 +84,11 @@ public class LetterLine : MonoBehaviour {
         int positionInArray = Random.Range(0, 3);
         Target2P inactiveLetterClone = Instantiate(inactiveLettersArray[positionInArray], position.position, transform.rotation);
         inactiveLetterClone.transform.SetParent(this.transform);
+        inactiveLetterClone.SetIsTheRightTarget(false);
         /*Target2P inactiveLetterCloneTarget = inactiveLetterClone.GetComponent<Target2P>();
         inactiveLetterCloneTarget.SetLineAndTargetID(lineAndTargetID);*/
     }
-    
+
     //Helping Method - not sure if this one is even needed ?! :O
     public void SetLineAndTargetID(int id)
     {
@@ -102,6 +112,10 @@ public class LetterLine : MonoBehaviour {
             numberOfInstances += numOfActiveLetters;
         }
         numberOfInstances = 0;
+        /////////////////////////////////////
+        Debug.Log("Count : " + count);
+        count++;
+        /////////////////////////////////////
         return;
     }
 }

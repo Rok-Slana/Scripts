@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
     private int numberOfInstances = 0;                          //holds number of created instances of current active letter
     private int targetsSpawned = 0;
     private int activeLetterIndex = 0;
+    private int nextIndex;                                      //Used in FillInactiveLetters
+    private int sum;                                            //Used in FillInactiveLetters
     private int[] inactiveLettersIndex;
     public Target2P[] alphabet;                                 //Store all letters here in alphabetical order   
     private Target2P activeLetter;                              //Store active letter object here
@@ -119,16 +121,27 @@ public class GameManager : MonoBehaviour
     // Fills inactive letters array with inactive letter objects
     private void FillInactiveLetters()
     {
-        int newIndex = activeLetterIndex + 1;
-        int sum = alphabet.Length - activeLetterIndex;
+        //tole naj gre izven metod na nzačetek
+        nextIndex = activeLetterIndex + 1;
+        sum = alphabet.Length - activeLetterIndex;
 
-        if (sum <= 3) newIndex -= 4;
+
+        /* PROBLEM HERE ??*/
+        if (sum <= 3)
+        {
+
+            Debug.Log("Next index : " + nextIndex);
+            nextIndex -= 5;
+            Debug.Log("New index - 5 : " + nextIndex);
+            Debug.Log("Sum : " + sum);
+            Debug.Break();
+        } 
 
         for (int x = 0; x < 3; x++)
         {
-            inactiveLetters[x] = alphabet[newIndex];
-            inactiveLetters[x].SetIsTheRightTarget(false);
-            newIndex++;
+            inactiveLetters[x] = alphabet[nextIndex];
+            //inactiveLetters[x].SetIsTheRightTarget(false);
+            nextIndex++;
         }
     }
 
