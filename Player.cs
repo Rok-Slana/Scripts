@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Player : MonoBehaviour {
 	
@@ -15,16 +13,9 @@ public class Player : MonoBehaviour {
 	
 	private int numOfRockets;
 	
-	//private Vector3 playerPos;
-	
 	private bool rocketActive = false;
 	
 	private float timer;
-	
-	
-	void Start(){
-		//playerPos = this.transform.position;
-	}
 	
 	void Update () {		
 		
@@ -32,14 +23,12 @@ public class Player : MonoBehaviour {
 		if(Input.GetMouseButtonDown(0) && !rocketActive){		
 			Vector3 targetPos = MousePos();			
 			Rocket rocketClone = Instantiate(rocket, this.transform.position, Quaternion.identity);
-            //Debug.Log(rocketClone);
 			rocketClone.LaunchRocket(targetPos);			
 		}
 		
 		//Subtratct time from timer if rocket is active
 		if(rocketActive){
 			timer-=Time.deltaTime;
-			//Debug.Log(timer);
 			if(timer<=0.0f){
 				rocketActive = false;
 				timer = time;

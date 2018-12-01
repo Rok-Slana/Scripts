@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-
     #region
     [Tooltip("Time delay for letter sound at the start of the game")]
     public float playLetterDelay = 1.5f;
